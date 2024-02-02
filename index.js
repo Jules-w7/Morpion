@@ -1,41 +1,48 @@
 const express = require('express');
-const mqtt = require('mqtt');
-const socketIO = require('socket.io');
+const session = require('express-session');
 const http = require('http');
+const socketIO = require('socket.io');
+const path = require('path');
+const sessionHandler = require('./public/sessionHandler.js'); 
 
 const app = express();
-
-app.use(express.static('public'));
+const server = http.createServer(app);
+const io = socketIO(server);
 
 const port = 3000;
 
-const client = mqtt.connect('mqtt://localhost:1884');
+const connectedPlayers = new Map();
 
-client.on('connect', () => {
-	console.log("Connection established succesfully");
-	const topic = 'topic';
-	const message = 'MQTT WORKS';
+app.use(session({
+  secret: 'your_secret_key',
+  resave: false,
+  saveUninitialized: true,
+}));
 
-	client.publish(topic, message, (err) => {
-		if (!err) {
-			console.log(`Published message "${message}" to topic "${topic}"`);
-			client.end();
-		} else {
-			console.error('Error publishing message:', err);
-			client.end();
-		}
-	});
-});
-
-client.on('error', (err) => {
-        console.error('Error;', err);
-        client.end();
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-        res.redirect('/index.html');
+  res.redirect('/public/index.html');
 });
 
-app.listen(port, '0.0.0.0', () => {
-	console.log('Server is running on port 3000');
+app.get('/playervsplayer', sessionHandler);
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('setPlayerName', (playerName) => {
+    connectedPlayers.set(socket.id, playerName);
+    io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+
+    connectedPlayers.delete(socket.id);
+    io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
+  });
+});
+
+server.listen(port, '0.0.0.0', () => {
+  console.log('Server is running on port 3000');
 });

@@ -1,0 +1,179 @@
+body{
+    background-color: #498EAF   ;
+    font-family: 'Black Ops One', system-ui;
+    overflow: hidden ;
+}
+    
+h1{
+    text-align: center;
+    font-size: 40px;
+    margin-left: 11vh;
+    bottom: 90%;
+    color:#003853;
+
+   
+}
+h2{
+    text-align: center;
+    font-size: 40px;
+    bottom: 90%;
+    color:#003853;
+}
+h3{
+    font-size: 20px;
+}
+
+.imglogo {
+    height: 200px;
+    position: absolute;
+    bottom: -50px;
+    margin-left: -35%;
+}
+.imglogo2 {
+    height: 300px;
+    bottom: -15px;
+    margin-right: -45%;
+}
+.imglogo3 {
+    height: 300px;
+    position: absolute;
+    margin-left: -30%;
+
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 5vh;
+}
+.grid-item {
+    background-color: none;
+    border: 2px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    height: 12vh;
+    text-align: center;
+}
+/*img{
+    height: 20vh;
+    width: 20vh;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}*/
+
+.rond {
+ position: fixed;
+ right: 0%;
+ bottom: 0%;
+ height: 22vh;
+ width: 51%;
+ display: block;
+ margin-left: auto;
+ margin-right: auto;
+}
+
+.imgdec{
+    width: 200px;
+    height: 200px;
+}
+
+.croix {
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    height: 10vh;
+    width: 10vh;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.imgcroix {
+    width: 300px;
+    height: 200px;
+}
+
+.button1{
+    background-color: #003853; 
+    color: white;
+    padding: 15px 32px;
+    border-radius: 15px;
+    margin-top:70%;
+    display: flex;
+    margin-left: 10%;
+    border: none;
+    margin-bottom: 5%;
+}   
+
+.button2{
+    background-color: #003853;
+    margin-bottom:17%;
+    margin-left: 29%;
+    color: white;
+    padding: 15px 32px;
+    display: flex;
+    border-radius: 15px;
+    border: none;
+
+}
+.button3{
+    background-color: #003853;
+    color: white;
+    padding: 15px 32px;
+    display: inline-block;
+    border-radius: 15px;
+    margin-bottom: 5%;
+    border: none;
+    margin-top: 50%;
+    font-size: 13px;
+    width: 45%;
+}
+.button4{
+    background-color: #003853;
+    margin-right: auto;
+    color: white;
+    padding: 15px 32px;
+    display: inline-block;
+    font-size: 13px;
+    border-radius: 20px;
+    bottom: 0%;
+    border: none;
+}
+.bottom{ 
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 25%;
+    right: 25%;
+}
+.flex{
+    display: flex;
+}
+
+.imgCenterPage{
+    display: flex;
+    align-items:center;
+    justify-content:center;
+}
+
+a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+a:link {
+    color: white;
+    text-decoration: none;
+}
+
+div.froggy{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+div.logo {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}

@@ -1,28 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../style/css/home.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+    <script src="../gameplay.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap" rel="stylesheet">
     <title>Game</title>
 </head>
+
 <body>
     <button class="button1">player1</button>
     <button class="button2" style="float: right">player2</button>
-    <h2 id="status"></h2>	
-    <br></br>
+    <div id="playerList"></div>
+    <br>
+    <br>
     <div class="grid-container">
-        <div data-index="0" class="griditem"></div>
-        <div data-index="1" class="griditem"></div>
-        <div data-index="2" class="griditem"></div>  
-        <div data-index="3" class="griditem"></div>
-        <div data-index="4" class="griditem"></div>
-        <div data-index="5" class="griditem"></div>  
-        <div data-index="6" class="griditem"></div>
-        <div data-index="7" class="griditem"></div>
-        <div data-index="8" class="griditem"></div>  
-      </div>
-  <img src="../images/images/Logo.png" style="margin-top: 5%; width: 75%;" >
-  <script src="../gameplay.js"></script>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+    </div>
+    <script>
+        const socket = io('http://localhost:3000');
+        const playerList = document.getElementById('playerList');
+
+        socket.on('updatePlayerList', (players) => {
+            playerList.innerHTML = `<p>Connected Players: ${players.join(', ')}</p>`;
+        });
+    </script>
 </body>
+
 </html>

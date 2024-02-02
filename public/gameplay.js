@@ -26,7 +26,7 @@ const tourJoueur = () => `C'est au tour du joueur ${joueurActif}`
 statut.innerHTML = tourJoueur();
 
 // On met en place les écouteurs d'évènements
-document.querySelectorAll(".griditem").forEach(cell => cell.addEventListener("click", gestionClicgrid))
+document.querySelectorAll(".grid-item").forEach(cell => cell.addEventListener("click", gestionClicgrid))
 
 /**
  * Cette fonction gère le clic sur les cases du jeu
