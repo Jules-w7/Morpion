@@ -1,3 +1,4 @@
+// Import des modules
 const express = require('express');
 const session = require('express-session');
 const http = require('http');
@@ -5,10 +6,15 @@ const socketIO = require('socket.io');
 const path = require('path');
 const sessionHandler = require('./public/sessionHandler.js'); 
 
+// Créer l'application grace à express
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
+// Définie le dossier ou se trouve tous les documents du site
+app.use(express.static('public'));
+
+// Définie le port auquelle le serveur va s'ouvrir
 const port = 3000;
 
 const connectedPlayers = new Map();
@@ -21,6 +27,7 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Définie quelle document va être ouvert en premier
 app.get('/', (req, res) => {
   res.redirect('/public/index.html');
 });
