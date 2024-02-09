@@ -1,36 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/règlespropos.css"> <!-- Lien vers la feuille de style externe -->
     <title>Document</title>
 </head>
 <body>
     <h2> A propos</h2>
     
+    <!-- Contenu principal avec une barre de défilement vertical limitée à une hauteur de 500 pixels -->
     <div style="overflow-y:scroll; height: 500px;">
-            Le projet prend cours durant l’années de préapprentissage 2023-2024.Ce projet est un morpion géant. 
-        <br>    
-            Dans ce projet tous les métiers sont mis au travail les ébénistes crée le boitier, les automaticiens s’occupe de code certaine chose + de crée des supports en aluminium, les électroniciens s’occupent de crée les leds qui permettront de jouer + de s’occuper de toute la partie électronique, et finalement les informaticiens qui s’occuperont de l’interface graphique sur téléphone et du jeu en lui-même, par exemple en configurant les Raspberry et en faisant le code nécessaire .
-        <br>
+        <!-- Description du projet -->
+        <p>Le projet prend cours durant l’année de préapprentissage 2023-2024. Ce projet est un morpion géant.</p> 
+           
+        <p>Dans ce projet, tous les métiers sont mis au travail : les ébénistes créent le boîtier, les automaticiens s'occupent de coder certaines choses et de créer des supports en aluminium, les électroniciens créent les LEDs qui permettront de jouer et s'occupent de toute la partie électronique, et finalement les informaticiens s'occupent de l'interface graphique sur téléphone et du jeu en lui-même, par exemple en configurant les Raspberry et en écrivant le code nécessaire.</p>
+        
+        <!-- Section sur le serveur -->
         <h3>Le serveur :</h3> 
-            On a créé deux vm avec comme os debian 12.4 pour simuler le Raspberry pi et changer l’ip de chaque vm puis on a installé mqtt-clients sur les deux vm. On a fait les settings de mqtt pour les connecter entre eux  
-        <br>
+        <p>On a créé deux VM avec comme OS Debian 12.4 pour simuler le Raspberry Pi et changer l'IP de chaque VM. Puis, on a installé MQTT-clients sur les deux VM et configuré MQTT pour les connecter entre eux.</p>
+       
+        <!-- Section sur la configuration du Raspberry -->
         <h3>Config Raspberry :</h3>
-            On a installé l’OS (operating system) debian 12 sur le Raspberry. On a aussi dû configurer le routeur ou on a attribué une adresse IP (internet protocole) au Raspberry. On a installé les différents outils qui vont permettre la création du serveur (NodeJS, MQTT, socket IO) NodeJS permet de créer des serveurs web. Mqtt (Mosquitto) est un protocole de messagerie de machine a machine.   
-        <br>
+        <p>On a installé l'OS (Operating System) Debian 12 sur le Raspberry. On a aussi dû configurer le routeur où on a attribué une adresse IP (Internet Protocol) au Raspberry. On a installé les différents outils qui vont permettre la création du serveur (NodeJS, MQTT, Socket IO). NodeJS permet de créer des serveurs web. MQTT (Mosquitto) est un protocole de messagerie de machine à machine.</p>  
+       
+        <!-- Section sur le gameplay -->
         <h3>Gameplay :</h3> 
-            Pour le gameplay nous avons fait la liste des taches et les règles du morpion que nous avons transmis au groupe design. Nous nous sommes renseignés sur comment faire un tableau en HTML et comment pouvoir afficher une image quand nous appuyons sur une case du tableau. Nous nous sommes séparé les taches afin d’aller plus rapidement, et nous avons commencé les boutons et la page de jeu. 
-        <br>
+        <p>Pour le gameplay, nous avons fait la liste des tâches et les règles du morpion que nous avons transmis au groupe design. Nous nous sommes renseignés sur comment faire un tableau en HTML et comment pouvoir afficher une image lorsque nous appuyons sur une case du tableau. Nous nous sommes séparé les tâches afin d'aller plus rapidement, et nous avons commencé les boutons et la page de jeu.</p> 
+       
+        <!-- Section sur le design -->
         <h3>Design :</h3>
-            On a commencé par réfléchir comment le site allait ressemblez. Nous avons discuté à propos de Web-Site et on a fait le design sur Canva. Après avoir discuté et mis en place comment nous allons le faire, on a demandé l’avis à nos encadrants. Quand on a fini avec Canva, nous avons commencé coder le site. Nous avons créé 5 pages “A propos”, “PlayerVSPlayer”, “PlayerVSOrdi”, “Règle” et “Home”. On a commencé à apprendre le Responsive Design. 
+        <p>On a commencé par réfléchir à quoi le site allait ressembler. Nous avons discuté à propos du site web et avons fait le design sur Canva. Après avoir discuté et mis en place comment nous allons le faire, on a demandé l'avis à nos encadrants. Quand on a fini avec Canva, nous avons commencé à coder le site. Nous avons créé 5 pages "A propos", "PlayerVSPlayer", "PlayerVSOrdi", "Règle" et "Home". On a commencé à apprendre le Responsive Design. </p>
     </div>
             
+    <!-- Section pour afficher le logo en bas et au centre -->
     <div class="logo">
-        <img  class="imglogo2" src="../images/Logo.png">
+        <a href="../html/home.html"><img class="imgfleche" src="../images/fleche.png"></a>
+        <img class="imglogo1" src="../images/Logo.png"> <!-- Image du logo -->
     </div>
+   
 
 </body>
 </html>

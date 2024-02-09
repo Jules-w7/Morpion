@@ -1,0 +1,48 @@
+body{
+    background-color: #498EAF   ;
+    font-family: 'Black Ops One', system-ui;
+    overflow: hidden;
+    height: 100vh;
+    margin: 9px;
+}
+h1{
+    text-align: center;
+    font-size: 40px;
+    bottom: 90%;
+    color:#003853;
+}
+.pics {
+    width: 200px;
+    height: 200px;
+}
+.pic2 {
+    width: 200px;
+    height: 200px;
+}
+.pic3 {
+    width: 200px;
+    height: 200px;
+}
+.pic4 {
+    width: 200px;
+    height: 200px;
+}
+.pic5 {
+    width: 200px;
+    height: 200px;
+}
+.pic6 {
+    width: 200px;
+    height: 200px;
+}
+div.image{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.fleche{
+    position: absolute;
+    top: 89%;
+    width: 40%;
+    left: -2%;
+}

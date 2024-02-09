@@ -1,123 +1,86 @@
-body{
-    background-color: #498EAF   ;
+/* Styles pour le corps */
+body {
+    background-color: #498EAF;
     font-family: 'Black Ops One', system-ui;
-    overflow: hidden ;
+    overflow: hidden; /* Masquer le défilement */
 }
-    
-h1{
+
+/* Styles pour l'en-tête (h1) */
+h1 {
     text-align: center;
     font-size: 40px;
     margin-left: 11vh;
-    bottom: 90%;
-    color:#003853;
-
-   
-}
-h2{
-    text-align: center;
-    font-size: 40px;
-    bottom: 90%;
-    color:#003853;
-}
-h3{
-    font-size: 20px;
+    bottom: 90%; /* Ajuster la position depuis le bas */
+    color: #003853;
 }
 
+/* Styles pour l'image du logo */
 .imglogo {
-    height: 200px;
+    height: 15%; /* Définir la hauteur de l'image */
     position: absolute;
-    bottom: -50px;
-    margin-left: -35%;
-}
-.imglogo2 {
-    height: 300px;
-    bottom: -15px;
-    margin-right: -45%;
-}
-.imglogo3 {
-    height: 300px;
-    position: absolute;
-    margin-left: -30%;
-
+    bottom: -1%;
 }
 
-.grid-container {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    padding: 5vh;
-}
-.grid-item {
-    background-color: none;
-    border: 2px solid rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    font-size: 30px;
-    height: 12vh;
-    text-align: center;
-}
-/*img{
-    height: 20vh;
-    width: 20vh;
+/* Styles pour l'élément rond fixe */
+.rond {
+    position: fixed;
+    right: 0%;
+    bottom: 0%;
+    height: 22vh; /* Définir la hauteur de l'élément rond */
+    width: 51%; /* Définir la largeur de l'élément rond */
     display: block;
     margin-left: auto;
     margin-right: auto;
-}*/
-
-.rond {
- position: fixed;
- right: 0%;
- bottom: 0%;
- height: 22vh;
- width: 51%;
- display: block;
- margin-left: auto;
- margin-right: auto;
 }
 
-.imgdec{
-    width: 200px;
-    height: 200px;
+/* Styles pour une petite image décorative */
+.imgdec {
+    width: 200px; /* Définir la largeur de l'image */
+    height: 200px; /* Définir la hauteur de l'image */
 }
 
+/* Styles pour la croix positionnée en haut à gauche */
 .croix {
     position: fixed;
     top: 0%;
     left: 0%;
-    height: 10vh;
-    width: 10vh;
+    height: 10vh; /* Définir la hauteur de la croix */
+    width: 10vh; /* Définir la largeur de la croix */
     display: block;
     margin-left: auto;
     margin-right: auto;
 }
 
+/* Styles pour une image avec une croix */
 .imgcroix {
-    width: 300px;
-    height: 200px;
+    width: 300px; /* Définir la largeur de l'image */
+    height: 200px; /* Définir la hauteur de l'image */
 }
 
-.button1{
-    background-color: #003853; 
+.button1 {
+    background-color: #003853;
     color: white;
     padding: 15px 32px;
     border-radius: 15px;
-    margin-top:70%;
+    margin-top: 70%;
     display: flex;
     margin-left: 10%;
     border: none;
     margin-bottom: 5%;
-}   
+}
 
-.button2{
+.button2 {
     background-color: #003853;
-    margin-bottom:17%;
+    margin-bottom: 17%;
     margin-left: 29%;
     color: white;
     padding: 15px 32px;
     display: flex;
     border-radius: 15px;
     border: none;
-
 }
-.button3{
+
+.button3 {
     background-color: #003853;
     color: white;
     padding: 15px 32px;
@@ -125,11 +88,11 @@ h3{
     border-radius: 15px;
     margin-bottom: 5%;
     border: none;
-    margin-top: 50%;
     font-size: 13px;
     width: 45%;
 }
-.button4{
+
+.button4 {
     background-color: #003853;
     margin-right: auto;
     color: white;
@@ -140,23 +103,39 @@ h3{
     bottom: 0%;
     border: none;
 }
-.bottom{ 
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 25%;
-    right: 25%;
-}
-.flex{
+.button5 {
+    background-color: #003853;
+    margin-bottom: 17%;
+    margin-left: 29%;
+    color: white;
+    padding: 15px 32px;
     display: flex;
+    border-radius: 15px;
+    border: none;
 }
-
-.imgCenterPage{
+.button6 {
+    background-color: #003853;
+    margin-bottom: 17%;
+    margin-left: 29%;
+    color: white;
+    padding: 15px 32px;
     display: flex;
-    align-items:center;
-    justify-content:center;
+    border-radius: 15px;
+    border: none;
 }
-
+.button7 {
+    background-color: #003853;
+    margin-right: auto;
+    color: white;
+    padding: 15px 32px;
+    display: inline-block;
+    font-size: 13px;
+    border-radius: 20px;
+    bottom: 0%;
+    border: none;
+    margin-bottom: 5%;
+    margin-top: 25%;
+}
 a:visited {
     color: white;
     text-decoration: none;
@@ -167,13 +146,8 @@ a:link {
     text-decoration: none;
 }
 
-div.froggy{
+div.froggy {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-}
-div.logo {
-    display: flex;
-    align-items: center;
     justify-content: flex-end;
 }
