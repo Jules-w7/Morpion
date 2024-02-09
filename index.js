@@ -5,7 +5,6 @@ const http = require('http');
 const socketIO = require('socket.io');
 const path = require('path');
 const sessionHandler = require('./public/sessionHandler.js');
-const mqtt = require('mqtt');  // Add this line to import the mqtt library
 
 // Créer l'application grâce à express
 const app = express();
@@ -29,11 +28,6 @@ app.use(session({
 
 app.set('socketio', io);
 
-// Create an MQTT client
-const mqttBroker = 'mqtt://localhost';  // Replace with your MQTT broker's address
-const mqttClient = mqtt.connect(mqttBroker);
-const mqttTopic = 'gameplay_moves';
-
 // Définir quelle document va être ouvert en premier
 app.get('/', (req, res) => {
   res.redirect('/public/index.html');
@@ -43,55 +37,42 @@ app.get('/', (req, res) => {
 app.get('/playervsplayer', sessionHandler);
 
 app.get('/gameplay.js', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'js', 'Jsgameplay.js'));
+	res.sendFile(path.join(__dirname, 'public', 'js','Jsgameplay.js'));
 });
 
 // Gestion des connexions et déconnexions des utilisateurs avec Socket.IO
 io.on('connection', (socket) => {
-    console.log('A user connected');
+  console.log('A user connected');
 
-    socket.on('setPlayerName', (playerName) => {
-        connectedPlayers.set(socket.id, playerName);
-        io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
-        console.log(`Number of connected users: ${connectedPlayers.size}`);
-    });
+  socket.on('setPlayerName', (playerName) => {
+      connectedPlayers.set(socket.id, playerName);
+      io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
+      console.log(`Number of connected users: ${connectedPlayers.size}`);
+  });
 
-    // Handle the 'playerMove' event
-    socket.on('playerMove', ({ indexgrid, convertionSymbole }) => {
-        console.log(`${indexgrid}.${convertionSymbole}`);
+  socket.on('playerMove', ({ indexgrid, joueurActif }) => {
+      // Broadcast the player move to all clients except the sender
+      socket.broadcast.emit('updateGame', { indexgrid, joueurActif });
+  });
 
-        // Publish MQTT message with indexgrid and convertionSymbole
-        const mqttMessage = `${indexgrid}.${convertionSymbole}`;
-        mqttClient.publish(mqttTopic, mqttMessage, (err) => {
-            if (err) {
-                console.error('Failed to send MQTT message:', err);
-            } else {
-                console.log('MQTT message sent successfully:', mqttMessage);
-            }
-        });
+  socket.on('disconnect', () => {
+      console.log('User disconnected');
 
-        // Broadcast the player move to all clients except the sender
-        socket.broadcast.emit('updateGame', { indexgrid, convertionSymbole });
-    });
+      if (connectedPlayers.has(socket.id)) {
+          const playerName = connectedPlayers.get(socket.id);
+          connectedPlayers.delete(socket.id);
+          io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
+          console.log(`Number of connected users: ${connectedPlayers.size}`);
 
-    socket.on('disconnect', () => {
-        console.log('User disconnected');
-
-        if (connectedPlayers.has(socket.id)) {
-            const playerName = connectedPlayers.get(socket.id);
-            connectedPlayers.delete(socket.id);
-            io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
-            console.log(`Number of connected users: ${connectedPlayers.size}`);
-
-            if (socket.request.session && socket.request.session.playerName) {
-                delete socket.request.session.playerName;
-                console.log(`Player "${playerName}" removed from session`);
-            }
-        }
-    });
+          if (socket.request.session && socket.request.session.playerName) {
+              delete socket.request.session.playerName;
+              console.log(`Player "${playerName}" removed from session`);
+          }
+      }
+  });
 });
 
 // Démarrer le serveur
 server.listen(port, '0.0.0.0', () => {
-    console.log('Server is running on port 3000');
+  console.log('Server is running on port 3000');
 });
