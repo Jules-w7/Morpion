@@ -1,9 +1,10 @@
-const statut = document.querySelector("h2")
-let jeuActif = true
-let joueurActif = "X"
-let etatJeu = ["", "", "", "", "", "", "", "", ""]
+// Import symbols and initial game state
+const statut = document.querySelector("h2");
+let jeuActif = true;
+let joueurActif = "X";
+let etatJeu = ["", "", "", "", "", "", "", "", ""];
 
-// on définit les conditions de victoire
+// Define the winning conditions
 const conditionsVictoire = [
     [0, 1, 2],
     [3, 4, 5],
@@ -13,42 +14,64 @@ const conditionsVictoire = [
     [2, 5, 8],
     [0, 4, 8],
     [2, 4, 6]
-]
+];
 
-// messages
-const gagne = () => `Le joueur ${joueurActif} a gagné`
-const egalite = () => "Egalité"
-const tourJoueur = () => `C'est au tour du joueur ${joueurActif}`
+// Messages
+const gagne = () => `Le joueur ${joueurActif} a gagné`;
+const egalite = () => "Egalité";
+const tourJoueur = () => `C'est au tour du joueur ${joueurActif}`;
 
-// On affiche quel joueur commence
-statut.innerHTML = tourJoueur()
+// Display which player starts
+statut.innerHTML = tourJoueur();
 
-// On met en place les écouteurs d'évènements
+// Set up event listeners
 document.querySelectorAll("td[data-index]").forEach(cell => cell.addEventListener("click", gestionClicgrid));
 
-// Convertit les symboles en 1 ou 2 pour l'envoie MQTT
+// Convert symbols to 1 or 2 for MQTT transmission
 const playerSymbole = {
     "X": 0,
     "O": 1
+};
+
+// Add an event listener for the 'updateGame' event
+socket.on('updateGame', ({ indexgrid, joueurActif }) => {
+    // Handle the incoming move and update the game state
+    updateGameState(indexgrid, joueurActif);
+});
+
+function updateGameState(indexgrid, joueurActif) {
+    // Update the game state based on the received move
+    const cell = document.querySelector(`td[data-index="${indexgrid}"]`);
+
+    if (cell) {
+        const imgElement = document.createElement("img");
+        imgElement.src = joueurActif === "X" ? "../images/croix1.png" : "../images/rond1.png";
+        imgElement.alt = joueurActif;
+
+        // Replace innerHTML with the img element
+        cell.innerHTML = "";
+        cell.appendChild(imgElement);
+    }
+
+    // Update any other game-related logic as needed
+    verifGagne();
 }
 
-// gère le clic sur les cases du jeu
+// Handle click on game cells
 function gestionClicgrid() {
-    // On récupère l'index de la case cliquée
-    
     const indexgrid = parseInt(this.dataset.index);
     var convertionSymbole = playerSymbole[joueurActif];
 
-    // Désactive les boutons pour changer de symbole quand on clique une case sur la grille
+    // Disable buttons to change symbol when clicking a cell on the grid
     document.querySelector(".croix1").disabled = true;
     document.querySelector(".rond1").disabled = true;
 
-    // On vérifie si la case est déjà remplie ou le jeu terminé
+    // Check if the cell is already filled or the game is over
     if (etatJeu[indexgrid] !== "" || !jeuActif) {
         return;
     }
 
-    // On crée un élément img avec la source de l'image
+    // Create an img element with the image source
     const imgElement = document.createElement("img");
 
     // Determine which player is active and set the appropriate image source
@@ -64,86 +87,90 @@ function gestionClicgrid() {
     this.innerHTML = "";
     this.appendChild(imgElement);
 
-    // On écrit le symbole du joueur dans le tableau etatJeu
+    // Write the player's symbol to the etatJeu array
     etatJeu[indexgrid] = joueurActif;
     console.log(`${indexgrid}.${convertionSymbole}`);
 
+    // Emit the player move to the server
+    emitPlayerMove(indexgrid, joueurActif);
+
+    // Check for a win
     verifGagne();
 }
 
-// vérifie si le joueur a gagné
-function verifGagne(){
-    let tourGagnant = false
-
-    // les conditions de victoire
-    for(let conditionVictoire of conditionsVictoire){
-        // On récupère les 3 cases de la condition de victoire
-        let val1 = etatJeu[conditionVictoire[0]]
-        let val2 = etatJeu[conditionVictoire[1]]
-        let val3 = etatJeu[conditionVictoire[2]]
-
-        // si l'une des cases est vide
-        if(val1 === "" || val2 === "" || val3 === ""){
-            continue
-        }
-
-        // si les 3 cases sont identiques
-        if(val1 === val2 && val2 === val3){
-            // on gagne
-            tourGagnant = true
-            break
-        }
-    }
-
-    // si on a gagné
-    if(tourGagnant){
-        statut.innerHTML = gagne()
-        jeuActif = false
-        console.log(playerSymbole[joueurActif], 'win')
-        // Ajout d'un gestionnaire d'événements au bouton
-        document.querySelector(".restart").addEventListener("click", recommencer);
-        
-        return
-    }
-
-    // si toutes les cases sont remplies
-    if(!etatJeu.includes("")){
-        statut.innerHTML = egalite()
-        jeuActif = false
-        console.log(playerSymbole[joueurActif], 'egalité')
-        //setTimeout(ti, 1000)
-        // ajout d'un gestionnaire d'événements au bouton
-        document.querySelector(".restart").addEventListener("click", recommencer);
-        return
-    }
-
-    // change de joueur
-    joueurActif = joueurActif === "X" ? "O" : "X"
-    statut.innerHTML = tourJoueur()
+function emitPlayerMove(indexgrid, joueurActif) {
+    socket.emit('playerMove', { indexgrid, joueurActif });
 }
 
-// réinitialise le jeu
-function recommencer(){
+// Check if the player has won
+function verifGagne() {
+    let tourGagnant = false;
+
+    // Winning conditions
+    for (let conditionVictoire of conditionsVictoire) {
+        // Get the 3 cells of the winning condition
+        let val1 = etatJeu[conditionVictoire[0]];
+        let val2 = etatJeu[conditionVictoire[1]];
+        let val3 = etatJeu[conditionVictoire[2]];
+
+        // If all 3 cells are identical and not empty
+        if (val1 !== "" && val1 === val2 && val2 === val3) {
+            // Win
+            tourGagnant = true;
+            break;
+        }
+    }
+
+    // If we won
+    if (tourGagnant) {
+        statut.innerHTML = gagne();
+        jeuActif = false;
+        console.log(playerSymbole[joueurActif], 'win');
+
+        // Add an event handler to the button
+        document.querySelector(".restart").addEventListener("click", recommencer);
+
+        return;
+    }
+
+    // If all cells are filled
+    if (!etatJeu.includes("")) {
+        statut.innerHTML = egalite();
+        jeuActif = false;
+        console.log(playerSymbole[joueurActif], 'egalité');
+
+        // Add an event handler to the button
+        document.querySelector(".restart").addEventListener("click", recommencer);
+        return;
+    }
+
+    // Switch players
+    joueurActif = joueurActif === "X" ? "O" : "X";
+    statut.innerHTML = tourJoueur();
+}
+
+// Reset the game
+function recommencer() {
     window.location.reload();
 }
 
-// ajout d'un gestionnaire d'événements au bouton de choix de symbole
-document.querySelector(".croix1").addEventListener("click", function() {
+// Add an event handler to the symbol selection button
+document.querySelector(".croix1").addEventListener("click", function () {
     choisirSymbole("X");
 });
 
-document.querySelector(".rond1").addEventListener("click", function() {
+document.querySelector(".rond1").addEventListener("click", function () {
     choisirSymbole("O");
 });
 
-// fonction pour gérer le choix du symbole
+// Function to handle symbol selection
 function choisirSymbole(nouveauSymbole) {
     if (nouveauSymbole.toUpperCase() === "X" || nouveauSymbole.toUpperCase() === "O") {
         joueurActif = nouveauSymbole.toUpperCase();
         statut.innerHTML = tourJoueur();
-    } 
+    }
     if (nouveauSymbole.toUpperCase() === "O" || nouveauSymbole.toUpperCase() === "X") {
         joueurActif = nouveauSymbole.toUpperCase();
         statut.innerHTML = tourJoueur();
-    } 
+    }
 }

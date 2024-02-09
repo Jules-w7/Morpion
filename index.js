@@ -40,42 +40,35 @@ app.get('/gameplay.js', (req, res) => {
 	res.sendFile(path.join(__dirname, 'public', 'js','Jsgameplay.js'));
 });
 
-app.get('/Botgameplay.js', (req, res) => {
-	res.sendFile(path.join(__dirname, 'public', 'js','Botgameplay.js'));
-});
-
 // Gestion des connexions et déconnexions des utilisateurs avec Socket.IO
 io.on('connection', (socket) => {
   console.log('A user connected');
 
-  // Événement pour définir le nom du joueur
   socket.on('setPlayerName', (playerName) => {
-    connectedPlayers.set(socket.id, playerName);
-    io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
-
-    // Log the number of connected users
-    console.log(`Number of connected users: ${connectedPlayers.size}`);
+      connectedPlayers.set(socket.id, playerName);
+      io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
+      console.log(`Number of connected users: ${connectedPlayers.size}`);
   });
 
-  // Événement pour gérer la déconnexion d'un utilisateur
+  socket.on('playerMove', ({ indexgrid, joueurActif }) => {
+      // Broadcast the player move to all clients except the sender
+      socket.broadcast.emit('updateGame', { indexgrid, joueurActif });
+  });
+
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+      console.log('User disconnected');
 
-    // Supprimer l'utilisateur déconnecté de la liste des joueurs connectés
-    if (connectedPlayers.has(socket.id)) {
-      const playerName = connectedPlayers.get(socket.id); // Get the player name
-      connectedPlayers.delete(socket.id);
-      io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
+      if (connectedPlayers.has(socket.id)) {
+          const playerName = connectedPlayers.get(socket.id);
+          connectedPlayers.delete(socket.id);
+          io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
+          console.log(`Number of connected users: ${connectedPlayers.size}`);
 
-      // Log the number of connected users after disconnect
-      console.log(`Number of connected users: ${connectedPlayers.size}`);
-
-      // Supprimer l'utilisateur de la session
-      if (socket.request.session && socket.request.session.playerName) {
-        delete socket.request.session.playerName;
-        console.log(`Player "${playerName}" removed from session`);
+          if (socket.request.session && socket.request.session.playerName) {
+              delete socket.request.session.playerName;
+              console.log(`Player "${playerName}" removed from session`);
+          }
       }
-    }
   });
 });
 
