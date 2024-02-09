@@ -37,6 +37,9 @@ const playerSymbole = {
 socket.on('updateGame', ({ indexgrid, joueurActif }) => {
     // Handle the incoming move and update the game state
     updateGameState(indexgrid, joueurActif);
+
+    // Send MQTT message when a player makes a move
+    sendMqttMessage(`${indexgrid}.${playerSymbole[joueurActif]}`);
 });
 
 function updateGameState(indexgrid, joueurActif) {
@@ -57,7 +60,6 @@ function updateGameState(indexgrid, joueurActif) {
     verifGagne();
 }
 
-// Handle click on game cells
 function gestionClicgrid() {
     const indexgrid = parseInt(this.dataset.index);
     var convertionSymbole = playerSymbole[joueurActif];
@@ -91,18 +93,13 @@ function gestionClicgrid() {
 
         // Write the player's symbol to the etatJeu array
         etatJeu[indexgrid] = joueurActif;
-        console.log(`${indexgrid}.${convertionSymbole}`);
-
-        // Emit the player move to the server
-        emitPlayerMove(indexgrid, joueurActif);
+        
+        // Send the data to the server via Socket.IO
+        socket.emit('playerMove', { indexgrid, convertionSymbole });
 
         // Check for a win
         verifGagne();
     }
-}
-
-function emitPlayerMove(indexgrid, joueurActif) {
-    socket.emit('playerMove', { indexgrid, joueurActif });
 }
 
 // Check if the player has won
@@ -133,6 +130,9 @@ function verifGagne() {
         // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
 
+        // Send MQTT message for the win
+        sendMqttMessage(`${playerSymbole[joueurActif]}.win`);
+        
         return;
     }
 
@@ -144,6 +144,10 @@ function verifGagne() {
 
         // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
+        
+        // Send MQTT message for the tie
+        sendMqttMessage(`${playerSymbole[joueurActif]}.tie`);
+
         return;
     }
 
