@@ -16,7 +16,7 @@ const io = socketIO(server);
 app.use(express.static('public'));
 
 // Définir le port sur lequel le serveur va s'ouvrir
-const port = 4000;
+const port = 3000;
 
 const connectedPlayers = new Map();
 
@@ -44,6 +44,10 @@ app.get('/playervsplayer', sessionHandler);
 
 app.get('/gameplay.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'js', 'Jsgameplay.js'));
+});
+
+app.get('/Botgameplay.js', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'js', 'Botgameplay.js'));
 });
 
 // Gestion des connexions et déconnexions des utilisateurs avec Socket.IO
