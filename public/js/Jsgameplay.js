@@ -73,11 +73,10 @@ function gestionClicgrid() {
         return;
     }
 
-    // Check if the cell is empty before proceeding
-    if (this.innerHTML.trim() === "") {
-        // Create an img element with the image source
-        const imgElement = document.createElement("img");
+    // Create an img element with the image source
+    const imgElement = document.createElement("img");
 
+<<<<<<< HEAD
         // Determine which player is active and set the appropriate image source
         if (joueurActif === "X") {
             imgElement.src = "../images/croix1.png"; // Replace with the actual path to croix1.png
@@ -99,7 +98,30 @@ function gestionClicgrid() {
 
         // Check for a win
         verifGagne();
+=======
+    // Determine which player is active and set the appropriate image source
+    if (joueurActif === "X") {
+        imgElement.src = "../images/croix1.png"; // Replace with the actual path to croix1.png
+    } else {
+        imgElement.src = "../images/rond1.png"; // Replace with the actual path to rond1.png
+>>>>>>> parent of fb63fd5 (Fixed bug #3)
     }
+
+    imgElement.alt = joueurActif; // You can set alt attribute if needed
+
+    // Replace innerHTML with the img element
+    this.innerHTML = "";
+    this.appendChild(imgElement);
+
+    // Write the player's symbol to the etatJeu array
+    etatJeu[indexgrid] = joueurActif;
+    console.log(`${indexgrid}.${convertionSymbole}`);
+
+    // Emit the player move to the server
+    emitPlayerMove(indexgrid, joueurActif);
+
+    // Check for a win
+    verifGagne();
 }
 
 // Check if the player has won
