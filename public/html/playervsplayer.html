@@ -48,9 +48,6 @@
             // Emit the player's name to the server
                 socket.emit('setPlayerName', playerName);
     
-            socket.on('updatePlayerList', (players) => {
-                playerList.innerHTML = `<p>Connected Players: ${players.join(', ')}</p>`;
-            });
         </script>
         <script src="/gameplay.js"></script>
 </body>
