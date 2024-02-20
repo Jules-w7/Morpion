@@ -7,20 +7,20 @@ const path = require('path');
 const sessionHandler = require('./public/sessionHandler.js');
 const mqtt = require('mqtt');  // Add this line to import the mqtt library
 
-// Créer l'application grâce à express
+// Create the express application
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-// Définir le dossier où se trouvent tous les documents du site
+// Define the folder where all the site documents are located
 app.use(express.static('public'));
 
-// Définir le port sur lequel le serveur va s'ouvrir
+// Define the port on which the server will open
 const port = 3000;
 
 const connectedPlayers = new Map();
 
-// Middleware pour la gestion des sessions
+// Middleware for session management
 app.use(session({
   secret: 'your_secret_key',
   resave: false,
@@ -34,12 +34,12 @@ const mqttBroker = 'mqtt://localhost';  // Replace with your MQTT broker's addre
 const mqttClient = mqtt.connect(mqttBroker);
 const mqttTopic = 'gameplay_moves';
 
-// Définir quelle document va être ouvert en premier
+// Define which document will be opened first
 app.get('/', (req, res) => {
   res.redirect('/public/index.html');
 });
 
-// Gestion de la page "/playervsplayer" avec le sessionHandler
+// Handle the "/playervsplayer" page with the sessionHandler
 app.get('/playervsplayer', sessionHandler);
 
 app.get('/gameplay.js', (req, res) => {
@@ -50,7 +50,7 @@ app.get('/Botgameplay.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'js', 'Botgameplay.js'));
 });
 
-// Gestion des connexions et déconnexions des utilisateurs avec Socket.IO
+// Handle user connections and disconnections with Socket.IO
 io.on('connection', (socket) => {
     console.log('A user connected');
 
@@ -61,7 +61,7 @@ io.on('connection', (socket) => {
     });
 
     // Handle the 'playerMove' event
-    socket.on('playerMove', ({ indexgrid, convertionSymbole }) => {
+    socket.on('playerMove', ({ indexgrid, convertionSymbole, action }) => {
         console.log(`${indexgrid}.${convertionSymbole}`);
 
         // Publish MQTT message with indexgrid and convertionSymbole
@@ -76,6 +76,12 @@ io.on('connection', (socket) => {
 
         // Broadcast the player move to all clients except the sender
         socket.broadcast.emit('updateGame', { indexgrid, convertionSymbole });
+
+        // Handle the "disableCell" action
+        if (action === 'disableCell') {
+            // Broadcast the 'disableCell' event to all clients
+            io.emit('disableCell', indexgrid);
+        }
     });
 
     socket.on('disconnect', () => {
@@ -95,7 +101,7 @@ io.on('connection', (socket) => {
     });
 });
 
-// Démarrer le serveur
+// Start the server
 server.listen(port, '0.0.0.0', () => {
     console.log('Server is running on port 3000');
 });

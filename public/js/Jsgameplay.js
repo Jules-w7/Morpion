@@ -34,12 +34,15 @@ const playerSymbole = {
 };
 
 // Add an event listener for the 'updateGame' event
-socket.on('updateGame', ({ indexgrid, joueurActif }) => {
+socket.on('updateGame', ({ indexgrid, convertionSymbole }) => {
     // Handle the incoming move and update the game state
-    updateGameState(indexgrid, joueurActif);
+    updateGameState(indexgrid, convertionSymbole);
+});
 
-    // Send MQTT message when a player makes a move
-    sendMqttMessage(`${indexgrid}.${playerSymbole[joueurActif]}`);
+// Add an event listener for the 'disableCell' event
+socket.on('disableCell', (indexgrid) => {
+    // Call the disableCell function to disable the cell on the client side
+    disableCell(indexgrid);
 });
 
 function updateGameState(indexgrid, convertionSymbole) {
@@ -48,7 +51,7 @@ function updateGameState(indexgrid, convertionSymbole) {
 
     if (cell) {
         const imgElement = document.createElement("img");
-        imgElement.src = playerSymbole[joueurActif] === playerSymbole["X"] ? "../images/croix1.png" : "../images/rond1.png";
+        imgElement.src = convertionSymbole === playerSymbole["X"] ? "../images/croix1.png" : "../images/rond1.png";
         imgElement.alt = joueurActif;
 
         // Check if the cell has child nodes and remove them
@@ -80,28 +83,37 @@ function gestionClicgrid() {
     // Create an img element with the image source
     const imgElement = document.createElement("img");
 
-        // Determine which player is active and set the appropriate image source
-        if (joueurActif === "X") {
-            imgElement.src = "../images/croix1.png"; // Replace with the actual path to croix1.png
-        } else {
-            imgElement.src = "../images/rond1.png"; // Replace with the actual path to rond1.png
-        }
+    // Determine which player is active and set the appropriate image source
+    imgElement.src = convertionSymbole === playerSymbole["X"] ? "../images/croix1.png" : "../images/rond1.png";
+    imgElement.alt = joueurActif;
 
-        imgElement.alt = joueurActif; // You can set alt attribute if needed
+    // Replace innerHTML with the img element
+    this.innerHTML = "";
+    this.appendChild(imgElement);
 
-        // Replace innerHTML with the img element
-        this.innerHTML = "";
-        this.appendChild(imgElement);
+    // Add the "disabled" class to the clicked cell
+    this.classList.add("disabled");
 
-        // Write the player's symbol to the etatJeu array
-        etatJeu[indexgrid] = joueurActif;
-        
-        // Send the data to the server via Socket.IO
-        socket.emit('playerMove', { indexgrid, convertionSymbole });
+    // Write the player's symbol to the etatJeu array
+    etatJeu[indexgrid] = joueurActif;
 
-        // Check for a win
-        verifGagne();
+    // Emit data to the server via Socket.IO with the cell index and action
+    socket.emit('playerMove', { indexgrid, convertionSymbole, action: 'disableCell' });
+
+    // Check for a win
+    verifGagne();
+}
+
+function disableCell(indexgrid) {
+    // Disable the specified cell on the client side
+    const cell = document.querySelector(`td[data-index="${indexgrid}"]`);
+    if (cell) {
+        cell.classList.add("disabled");
     }
+}
+
+// Set up event listeners
+document.querySelectorAll("td[data-index]").forEach(cell => cell.addEventListener("click", gestionClicgrid));
 
 // Check if the player has won
 function verifGagne() {
