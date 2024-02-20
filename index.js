@@ -16,7 +16,7 @@ const io = socketIO(server);
 app.use(express.static('public'));
 
 // Définir le port sur lequel le serveur va s'ouvrir
-const port = 3000;
+const port = 4000;
 
 const connectedPlayers = new Map();
 
