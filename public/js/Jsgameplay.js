@@ -42,17 +42,21 @@ socket.on('updateGame', ({ indexgrid, joueurActif }) => {
     sendMqttMessage(`${indexgrid}.${playerSymbole[joueurActif]}`);
 });
 
-function updateGameState(indexgrid, joueurActif) {
+function updateGameState(indexgrid, convertionSymbole) {
     // Update the game state based on the received move
     const cell = document.querySelector(`td[data-index="${indexgrid}"]`);
 
     if (cell) {
         const imgElement = document.createElement("img");
-        imgElement.src = joueurActif === "X" ? "../images/croix1.png" : "../images/rond1.png";
+        imgElement.src = playerSymbole[joueurActif] === playerSymbole["X"] ? "../images/croix1.png" : "../images/rond1.png";
         imgElement.alt = joueurActif;
 
+        // Check if the cell has child nodes and remove them
+        while (cell.firstChild) {
+            cell.removeChild(cell.firstChild);
+        }
+
         // Replace innerHTML with the img element
-        cell.innerHTML = "";
         cell.appendChild(imgElement);
     }
 
