@@ -30,7 +30,7 @@ app.use(session({
 app.set('socketio', io);
 
 // Create an MQTT client
-const mqttBroker = 'mqtt://localhost';  // Replace with your MQTT broker's address
+const mqttBroker = 'mqtt://localhost:1884';  // Replace with your MQTT broker's address
 const mqttClient = mqtt.connect(mqttBroker);
 const mqttTopic = 'gameplay_moves';
 
@@ -60,10 +60,9 @@ io.on('connection', (socket) => {
         console.log(`Number of connected users: ${connectedPlayers.size}`);
     });
 
-    // Handle the 'playerMove' event
     socket.on('playerMove', ({ indexgrid, convertionSymbole, action }) => {
         console.log(`${indexgrid}.${convertionSymbole}`);
-
+    
         // Publish MQTT message with indexgrid and convertionSymbole
         const mqttMessage = `${indexgrid}.${convertionSymbole}`;
         mqttClient.publish(mqttTopic, mqttMessage, (err) => {
@@ -73,10 +72,10 @@ io.on('connection', (socket) => {
                 console.log('MQTT message sent successfully:', mqttMessage);
             }
         });
-
+    
         // Broadcast the player move to all clients except the sender
         socket.broadcast.emit('updateGame', { indexgrid, convertionSymbole });
-
+    
         // Handle the "disableCell" action
         if (action === 'disableCell') {
             // Broadcast the 'disableCell' event to all clients
