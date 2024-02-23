@@ -89,6 +89,12 @@ io.on('connection', (socket) => {
         io.emit('playerWin', { playerName, jeuActif });
     });    
 
+    socket.on('gameTie', ({ jeuActif }) => {
+        console.log(`The game is a tie`);
+        // Emit to all clients, not just the one who triggered the event
+        io.emit('gameTie', { jeuActif });
+    }); 
+
     socket.on('disconnect', () => {
         console.log('User disconnected');
 

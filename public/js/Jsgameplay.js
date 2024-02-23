@@ -178,6 +178,13 @@ socket.on('playerWin', ({ playerName, jeuActif }) => {
     statut.innerHTML = gagne();
 });
 
+socket.on('gameTie', ({ jeuActif }) => {
+    console.log(`The game is a tie!`);
+    jeuActif = false; // Assuming you're using this variable to control the game state
+    document.querySelectorAll("td[data-index]").forEach(cell => cell.removeEventListener("click", gestionClicgrid));
+    statut.innerHTML = egalite();
+});
+
 // Reset the game
 function recommencer() {
     window.location.reload();
