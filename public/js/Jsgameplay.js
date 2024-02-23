@@ -4,6 +4,7 @@ let jeuActif = true;
 let joueurActif = "X";
 let etatJeu = ["", "", "", "", "", "", "", "", ""];
 
+
 // Define the winning conditions
 const conditionsVictoire = [
     [0, 1, 2],
@@ -143,9 +144,9 @@ function verifGagne() {
         // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
 
-        // Send MQTT message for the win
-        sendMqttMessage(`${playerSymbole[joueurActif]}.win`);
-        
+        // Emit a message to the server indicating the win
+        socket.emit('playerWin', { playerName: joueurActif, jeuActif: false });
+
         return;
     }
 
@@ -158,8 +159,8 @@ function verifGagne() {
         // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
         
-        // Send MQTT message for the tie
-        sendMqttMessage(`${playerSymbole[joueurActif]}.tie`);
+        // Emit a message to the server indicating a tie
+        socket.emit('gameTie', { jeuActif: false });
 
         return;
     }
@@ -168,6 +169,14 @@ function verifGagne() {
     joueurActif = joueurActif === "X" ? "O" : "X";
     statut.innerHTML = tourJoueur();
 }
+
+// Add an event listener for the 'playerWin' event
+socket.on('playerWin', ({ playerName, jeuActif }) => {
+    console.log(`Player ${playerName} has won!`);
+    jeuActif = false; // Assuming you're using this variable to control the game state
+    document.querySelectorAll("td[data-index]").forEach(cell => cell.removeEventListener("click", gestionClicgrid));
+    statut.innerHTML = gagne();
+});
 
 // Reset the game
 function recommencer() {

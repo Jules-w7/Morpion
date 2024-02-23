@@ -83,6 +83,12 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('playerWin', ({ playerName, jeuActif }) => {
+        console.log(`Player ${playerName} has won!`);
+        // Emit to all clients, not just the one who triggered the event
+        io.emit('playerWin', { playerName, jeuActif });
+    });    
+
     socket.on('disconnect', () => {
         console.log('User disconnected');
 
@@ -99,6 +105,7 @@ io.on('connection', (socket) => {
         }
     });
 });
+
 
 // Start the server
 server.listen(port, '0.0.0.0', () => {
