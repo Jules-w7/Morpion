@@ -3,7 +3,7 @@ const statut = document.querySelector("h2");
 let jeuActif = true;
 let joueurActif = "X";
 let etatJeu = ["", "", "", "", "", "", "", "", ""];
-
+let myTurn = false; // Variable to track if it's the current player's turn
 
 // Define the winning conditions
 const conditionsVictoire = [
@@ -25,8 +25,24 @@ const tourJoueur = () => `C'est au tour du joueur ${joueurActif}`;
 // Display which player starts
 statut.innerHTML = tourJoueur();
 
+// Function to enable/disable grid interaction based on turn
+function enableGridInteraction(enable) {
+    document.querySelectorAll("td[data-index]").forEach(cell => {
+        cell.removeEventListener("click", gestionClicgrid); // Remove click event listener
+        if (enable) {
+            cell.addEventListener("click", gestionClicgrid); // Add click event listener if it's the player's turn
+        }
+    });
+}
+
 // Set up event listeners
 document.querySelectorAll("td[data-index]").forEach(cell => cell.addEventListener("click", gestionClicgrid));
+
+// Add an event listener for the 'yourTurn' event
+socket.on('yourTurn', () => {
+    myTurn = true; // Set myTurn to true when it's the current player's turn
+    enableGridInteraction(true); // Enable grid interaction
+});
 
 // Convert symbols to 1 or 2 for MQTT transmission
 const playerSymbole = {
@@ -69,6 +85,8 @@ function updateGameState(indexgrid, convertionSymbole) {
 }
 
 function gestionClicgrid() {
+    if (!myTurn) return; // Prevent interaction if it's not the current player's turn
+
     const indexgrid = parseInt(this.dataset.index);
     var convertionSymbole = playerSymbole[joueurActif];
 
@@ -103,6 +121,9 @@ function gestionClicgrid() {
 
     // Check for a win
     verifGagne();
+
+    myTurn = false; // Reset myTurn after making a move
+    enableGridInteraction(false); // Disable grid interaction until it's the player's turn again
 }
 
 function disableCell(indexgrid) {
@@ -112,9 +133,6 @@ function disableCell(indexgrid) {
         cell.classList.add("disabled");
     }
 }
-
-// Set up event listeners
-document.querySelectorAll("td[data-index]").forEach(cell => cell.addEventListener("click", gestionClicgrid));
 
 // Check if the player has won
 function verifGagne() {
@@ -147,6 +165,9 @@ function verifGagne() {
         // Emit a message to the server indicating the win
         socket.emit('playerWin', { playerName: joueurActif, jeuActif: false });
 
+        // Send MQTT message for the win
+        sendMqttMessage(`${playerSymbole[joueurActif]}.win`);
+
         return;
     }
 
@@ -158,9 +179,12 @@ function verifGagne() {
 
         // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
-        
+
         // Emit a message to the server indicating a tie
         socket.emit('gameTie', { jeuActif: false });
+
+        // Send MQTT message for the tie
+        sendMqttMessage(`${playerSymbole[joueurActif]}.tie`);
 
         return;
     }
@@ -172,10 +196,11 @@ function verifGagne() {
 
 // Add an event listener for the 'playerWin' event
 socket.on('playerWin', ({ playerName, jeuActif }) => {
+    const emitgagne = () => `Le joueur ${playerName} a gagné`;
     console.log(`Player ${playerName} has won!`);
     jeuActif = false; // Assuming you're using this variable to control the game state
     document.querySelectorAll("td[data-index]").forEach(cell => cell.removeEventListener("click", gestionClicgrid));
-    statut.innerHTML = gagne();
+    statut.innerHTML = emitgagne();
 });
 
 socket.on('gameTie', ({ jeuActif }) => {

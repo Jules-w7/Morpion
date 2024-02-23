@@ -19,6 +19,7 @@ app.use(express.static('public'));
 const port = 3000;
 
 const connectedPlayers = new Map();
+let currentPlayer = null; // Variable to track the current player
 
 // Middleware for session management
 app.use(session({
@@ -58,42 +59,60 @@ io.on('connection', (socket) => {
         connectedPlayers.set(socket.id, playerName);
         io.emit('updatePlayerList', Array.from(connectedPlayers.values()));
         console.log(`Number of connected users: ${connectedPlayers.size}`);
-    });
-
-    socket.on('playerMove', ({ indexgrid, convertionSymbole, action }) => {
-        console.log(`${indexgrid}.${convertionSymbole}`);
-    
-        // Publish MQTT message with indexgrid and convertionSymbole
-        const mqttMessage = `${indexgrid}.${convertionSymbole}`;
-        mqttClient.publish(mqttTopic, mqttMessage, (err) => {
-            if (err) {
-                console.error('Failed to send MQTT message:', err);
-            } else {
-                console.log('MQTT message sent successfully:', mqttMessage);
-            }
-        });
-    
-        // Broadcast the player move to all clients except the sender
-        socket.broadcast.emit('updateGame', { indexgrid, convertionSymbole });
-    
-        // Handle the "disableCell" action
-        if (action === 'disableCell') {
-            // Broadcast the 'disableCell' event to all clients
-            io.emit('disableCell', indexgrid);
+        if (connectedPlayers.size === 2) {
+            // Start the game when both players are connected
+            startGame();
         }
     });
 
-    socket.on('playerWin', ({ playerName, jeuActif }) => {
-        console.log(`Player ${playerName} has won!`);
-        // Emit to all clients, not just the one who triggered the event
-        io.emit('playerWin', { playerName, jeuActif });
-    });    
+    // Function to start the game
+    function startGame() {
+        const playerIds = Array.from(connectedPlayers.keys());
+        currentPlayer = playerIds[0]; // Set the first player as the current player
+        io.to(currentPlayer).emit('yourTurn'); // Inform the first player that it's their turn
+    }
 
-    socket.on('gameTie', ({ jeuActif }) => {
-        console.log(`The game is a tie`);
-        // Emit to all clients, not just the one who triggered the event
-        io.emit('gameTie', { jeuActif });
-    }); 
+    // Handle the 'playerMove' event
+    socket.on('playerMove', ({ indexgrid, convertionSymbole, action }) => {
+        if (socket.id === currentPlayer) {
+            console.log(`${indexgrid}.${convertionSymbole}`);
+
+            // Publish MQTT message with indexgrid and convertionSymbole
+            const mqttMessage = `${indexgrid}.${convertionSymbole}`;
+            mqttClient.publish(mqttTopic, mqttMessage, (err) => {
+                if (err) {
+                    console.error('Failed to send MQTT message:', err);
+                } else {
+                    console.log('MQTT message sent successfully:', mqttMessage);
+                }
+            });
+
+            // Broadcast the player move to all clients except the sender
+            socket.broadcast.emit('updateGame', { indexgrid, convertionSymbole });
+
+            // Handle the "disableCell" action
+            if (action === 'disableCell') {
+                // Broadcast the 'disableCell' event to all clients
+                io.emit('disableCell', indexgrid);
+            }
+
+            socket.on('playerWin', ({ playerName, jeuActif }) => {
+                console.log(`Player ${playerName} has won!`);
+                // Emit to all clients, not just the one who triggered the event
+                io.emit('playerWin', { playerName, jeuActif });
+            });    
+        
+            socket.on('gameTie', ({ jeuActif }) => {
+                console.log(`The game is a tie`);
+                // Emit to all clients, not just the one who triggered the event
+                io.emit('gameTie', { jeuActif });
+            }); 
+
+            // Switch turns
+            currentPlayer = currentPlayer === Array.from(connectedPlayers.keys())[0] ? Array.from(connectedPlayers.keys())[1] : Array.from(connectedPlayers.keys())[0];
+            io.to(currentPlayer).emit('yourTurn'); // Inform the next player that it's their turn
+        }
+    });
 
     socket.on('disconnect', () => {
         console.log('User disconnected');
@@ -111,7 +130,6 @@ io.on('connection', (socket) => {
         }
     });
 });
-
 
 // Start the server
 server.listen(port, '0.0.0.0', () => {
