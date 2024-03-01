@@ -7,12 +7,12 @@ let myTurn = false; // Variable to track if it's the current player's turn
 
 // Define the winning conditions
 const conditionsVictoire = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
+    [0, 5, 6],
     [1, 4, 7],
-    [2, 5, 8],
+    [2, 3, 8],
+    [0, 1, 2],
+    [5, 4, 3],
+    [6, 7, 8],
     [0, 4, 8],
     [2, 4, 6]
 ];
@@ -164,10 +164,6 @@ function verifGagne() {
 
         // Emit a message to the server indicating the win
         socket.emit('playerWin', { playerName: joueurActif, jeuActif: false });
-
-        // Send MQTT message for the win
-        sendMqttMessage(`${playerSymbole[joueurActif]}.win`);
-
         return;
     }
 
@@ -182,10 +178,6 @@ function verifGagne() {
 
         // Emit a message to the server indicating a tie
         socket.emit('gameTie', { jeuActif: false });
-
-        // Send MQTT message for the tie
-        sendMqttMessage(`${playerSymbole[joueurActif]}.tie`);
-
         return;
     }
 
