@@ -31,7 +31,7 @@ app.use(session({
 app.set('socketio', io);
 
 // Create an MQTT client
-const mqttBroker = 'mqtt://localhost:1884';  // Replace with your MQTT broker's address
+const mqttBroker = 'mqtt://localhost:1883';  // Replace with your MQTT broker's address
 const mqttClient = mqtt.connect(mqttBroker);
 const mqttTopic = 'gameplay_moves';
 

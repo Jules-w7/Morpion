@@ -44,10 +44,10 @@ socket.on('yourTurn', () => {
     enableGridInteraction(true); // Enable grid interaction
 });
 
-// Convert symbols to 1 or 2 for MQTT transmission
+// Convert symbols to 1 or 2 for MQTT transmission. The value 0 is for nothing on the matrix
 const playerSymbole = {
-    "X": 0,
-    "O": 1
+    "X": 1,
+    "O": 2
 };
 
 // Add an event listener for the 'updateGame' event
