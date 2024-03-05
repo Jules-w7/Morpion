@@ -90,10 +90,6 @@ function gestionClicgrid() {
     const indexgrid = parseInt(this.dataset.index);
     var convertionSymbole = playerSymbole[joueurActif];
 
-    // Disable buttons to change symbol when clicking a cell on the grid
-    document.querySelector(".croix1").disabled = true;
-    document.querySelector(".rond1").disabled = true;
-
     // Check if the cell is already filled or the game is over
     if (etatJeu[indexgrid] !== "" || !jeuActif) {
         return;
@@ -155,6 +151,7 @@ function verifGagne() {
 
     // If we won
     if (tourGagnant) {
+        joueurActif = playerName;
         statut.innerHTML = gagne();
         jeuActif = false;
         console.log(playerSymbole[joueurActif], 'win');
@@ -205,25 +202,4 @@ socket.on('gameTie', ({ jeuActif }) => {
 // Reset the game
 function recommencer() {
     window.location.reload();
-}
-
-// Add an event handler to the symbol selection button
-document.querySelector(".croix1").addEventListener("click", function () {
-    choisirSymbole("X");
-});
-
-document.querySelector(".rond1").addEventListener("click", function () {
-    choisirSymbole("O");
-});
-
-// Function to handle symbol selection
-function choisirSymbole(nouveauSymbole) {
-    if (nouveauSymbole.toUpperCase() === "X" || nouveauSymbole.toUpperCase() === "O") {
-        joueurActif = nouveauSymbole.toUpperCase();
-        statut.innerHTML = tourJoueur();
-    }
-    if (nouveauSymbole.toUpperCase() === "O" || nouveauSymbole.toUpperCase() === "X") {
-        joueurActif = nouveauSymbole.toUpperCase();
-        statut.innerHTML = tourJoueur();
-    }
 }

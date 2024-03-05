@@ -9,46 +9,46 @@
 </head>
 <body>
     <h2></h2>
-    <div class="button">
-        <button class="button1">player1</button>
-        <button class="button2">player2</button>
-    </div>
-    <br>
-        <div class="morpion">
-            <table>
-                <tr>
-                    <td data-index="0"></td>
-                    <td data-index="5"></td>
-                    <td data-index="6"></td>
-                </tr>
-                <tr>
-                    <td data-index="1"></td>
-                    <td data-index="4"></td>
-                    <td data-index="7"></td>
-                </tr>
-                <tr>
-                    <td data-index="2"></td>
-                    <td data-index="3"></td>
-                    <td data-index="8"></td>
-                </tr>
-            </table>
+    <div class="container">
+        <div class="gg">
+            <button class="button1">player1</button>
+            <button class="button2">player2</button>
         </div>
-        <button class="croix1"><img class="croix2" src="../images/croix1.png"></button>
-        <button class="rond1"><img class="rond2" src="../images/rond1.png"></button>
-        <button class="restart" onclick="recommencer()">Restart</button>
-        <img class="Logo3" src="../images/Logo.png">  
-        <a href="../html/home.html"><img class="fleche" src="../images/fleche.png"></a>
-        <script>
-            const socket = io('http://localhost:3000');
-            const playerList = document.getElementById('playerList');
+        <br>
+            <div>
+                <table class="morpion">
+                    <tr>
+                        <td data-index="0"></td>
+                        <td data-index="5"></td>
+                        <td data-index="6"></td>
+                    </tr>
+                    <tr>
+                        <td data-index="1"></td>
+                        <td data-index="4"></td>
+                        <td data-index="7"></td>
+                    </tr>
+                    <tr>
+                        <td data-index="2"></td>
+                        <td data-index="3"></td>
+                        <td data-index="8"></td>
+                    </tr>
+                </table>
+            </div>
+            <button class="restart" onclick="recommencer()">Restart</button>
+            <img class="Logo3" src="../images/Logo.png">  
+            <a href="../html/home.html"><img class="fleche" src="../images/fleche.png"></a>
+            <script>
+                const socket = io('http://localhost:3000');
+                const playerList = document.getElementById('playerList');
+        
+                // Prompt the user for their name
+                    const playerName = prompt('Enter your name:');
+        
+                // Emit the player's name to the server
+                    socket.emit('setPlayerName', playerName);
+        
     
-            // Prompt the user for their name
-                const playerName = prompt('Enter your name:');
-    
-            // Emit the player's name to the server
-                socket.emit('setPlayerName', playerName);
-    
-
-        </script>
-        <script src="/gameplay.js"></script>
+            </script>
+            <script src="/gameplay.js"></script>
+    </div>
 </body>

@@ -1,35 +1,22 @@
-const statut = document.getElementById("yuriId")
+const statut = document.getElementById("statut")
 let jeuActif = true
 let joueurActif = "X"
 let etatJeu = ["", "", "", "", "", "", "", "", ""]
 
-// on définit les conditions de victoire
 const conditionsVictoire = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
+    [0, 5, 6],
     [1, 4, 7],
-    [2, 5, 8],
+    [2, 3, 8],
+    [0, 1, 2],
+    [5, 4, 3],
+    [6, 7, 8],
     [0, 4, 8],
     [2, 4, 6]
-]
+];
 
 // messages
-const gagne = () => `Le joueur ${joueurActif} a gagné`
-const tie = () => "tu a fait égalité"
-const lose = () => "tu as perdu"
+const tie = () => "Egalité"
 const tourJoueur = () => `C'est au tour du joueur ${joueurActif}`
-
-function winAlert() {
-    alert('bravo mais facile');
-  }
-  function defeatAlert() {
-    alert("meme en t'entrainent 10 ans dans les montagnes tu ne pourrais pas gagner contre une limace");
-  }
-  function drawAlert() {
-    alert('Comment peux-tu faire match nul?');
-  }
 
 // On affiche quel joueur commence
 statut.innerHTML = tourJoueur()
@@ -39,8 +26,8 @@ document.querySelectorAll("td[data-index]").forEach(cell => cell.addEventListene
 
 // Convertit les symboles en 1 ou 2 pour l'envoie MQTT
 const playerSymbole = {
-    "X": 0,
-    "O": 1
+    "X": 1,
+    "O": 2
 }
 
 function checkOpponentWin() {
@@ -52,9 +39,8 @@ function checkOpponentWin() {
         let [a, b, c] = condition;
         if (etatJeu[a] === opponentSymbol && etatJeu[b] === opponentSymbol && etatJeu[c] === opponentSymbol) {
             // Set the status message to indicate that the player loses
-            statut.innerHTML = `Le joueur ${joueurActif} a perdu`;
+            statut.innerHTML =  lose();
             // Trigger the defeat alert
-            defeatAlert();
             // Set the game to inactive
             jeuActif = false;
             return true; // Opponent has won
@@ -157,7 +143,7 @@ function gestionClicgrid() {
     etatJeu[indexgrid] = joueurActif;
     console.log(`${indexgrid}.${convertionSymbole}`);
 
-   verifGagne();
+    verifGagne();
 
     // Change the active player after the current player has made a move
     isPlayerTurn = false;
@@ -212,31 +198,32 @@ function verifGagne() {
         }
     }
 
-    // si on a gagné
     if (tourGagnant) {
-        if (joueurActif === "X") {
-            statut.innerHTML = gagne();
-            setTimeout(winAlert, 1000);
-            console.log(playerSymbole[joueurActif], 'win');
+        if (joueurActif === "O") {
+            // If the AI wins, display "L'IA a gagné"
+            statut.innerHTML = "L'IA a gagné";
         } else {
-            statut.innerHTML = lose()
-            setTimeout(defeatAlert, 1000);
-            console.log(playerSymbole[joueurActif], 'lose');
+            // If the player wins, display the player's symbol and "a gagné"
+            statut.innerHTML = `Tu as gagné`;
         }
         jeuActif = false;
-        // Ajout d'un gestionnaire d'événements au bouton
+        console.log(playerSymbole[joueurActif], 'win');
+        // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
+        // Emit a message to the server indicating the win
+        socket.emit('playerWin', { jeuActif: false });
         return;
     }
 
-    // si toutes les cases sont remplies
+    // If all cells are filled
     if (!etatJeu.includes("")) {
         statut.innerHTML = tie();
-        console.log(playerSymbole[joueurActif], 'draw');
-        //setTimeout(ti, 1000)
-        // ajout d'un gestionnaire d'événements au bouton
+        jeuActif = false;
+        console.log(playerSymbole[joueurActif], 'egalité');
+        // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
-        setTimeout(drawAlert, 1000)
+        // Emit a message to the server indicating a tie
+        socket.emit('gameTie', { jeuActif: false });
         return;
     }
 

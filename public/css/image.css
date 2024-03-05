@@ -1,48 +1,112 @@
-body{
-    background-color: #498EAF   ;
+body {
+    background-color: #498EAF;
     font-family: 'Black Ops One', system-ui;
     overflow: hidden;
-    height: 100vh;
-    margin: 9px;
 }
-h1{
+.morpion{
+    border: 0px solid;
+    border-collapse: collapse;
+    margin-top: 10%;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+}
+td{
+    width: 90px;
+    height: 100px;
+    border: 1px solid;
     text-align: center;
-    font-size: 40px;
-    bottom: 90%;
-    color:#003853;
+    font-size: 24px;
+    cursor: pointer;
 }
-.pics {
-    width: 200px;
-    height: 200px;
+
+.button1 {
+    background-color: #003853;
+    color: white;
+    padding: 15px 32px;
+    display: inline-flex;
+    font-size: 13px;
+    border-radius: 20px;
+    bottom: 0%;
+    border: none;
+    margin-right: 20%;
+    
 }
-.pic2 {
-    width: 200px;
-    height: 200px;
+.button2 {
+    background-color: #003853;
+    color: white;
+    padding: 15px 32px;
+    display: inline-flex;
+    font-size: 13px;
+    border-radius: 20px;
+    bottom: 0%;
+    border: none;
 }
-.pic3 {
-    width: 200px;
-    height: 200px;
-}
-.pic4 {
-    width: 200px;
-    height: 200px;
-}
-.pic5 {
-    width: 200px;
-    height: 200px;
-}
-.pic6 {
-    width: 200px;
-    height: 200px;
-}
-div.image{
+.gg{
+    justify-content: center;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+}
+
+.centrerbutton{
+    justify-content: center;
+    display: flex;
+}
+
+.restart {
+    background-color: #003853;
+    color: white;
+    padding: 15px 32px;
+    font-size: 13px;
+    border-radius: 20px;
+    border: none;
+    margin-top: 3%;
+    
+}
+.ok{
+    justify-content: center;
+    display: flex;
+}
+.Logo3{
+    width: auto;
+    margin-top: 5%;   
+    display: flex;
 }
 .fleche{
     position: absolute;
-    top: 89%;
+    top: 85%;
     width: 40%;
     left: -2%;
+}
+
+@media only screen and (max-width: 389px){
+    .restart{
+      padding: 10px 16px;
+      font-size: 12px;
+    }   
+
+    .Logo3 {
+        width: 40%; /* Adjusted width for smaller screens */
+        margin-top: 5%; /* Adjusted margin-top for smaller screens */
+        position: absolute;
+        bottom: 8px;
+        right: 16px;
+    }
+
+    .fleche{
+        margin-top: 7%;
+    }
+
+}
+
+@media only screen and (min-width: 1000px){
+    .morpion{
+        margin-top: 5%;
+    }
+    
+    .fleche{
+        margin-top: 0%;
+        width: 15%;
+        margin-left: 2%;
+    }
+    
 }
