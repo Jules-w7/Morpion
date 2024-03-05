@@ -111,4 +111,5 @@ td{
 }
 .disabled {
     pointer-events: none;
+    background-color: #346a83;
 }

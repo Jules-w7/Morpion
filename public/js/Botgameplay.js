@@ -109,7 +109,6 @@ if (playerStartsWith === "O") {
     joueurActif = "X"; // Robot starts with "X" if player starts with "O"
 }
 
-
 function gestionClicgrid() {
     // Check if it's the player's turn
     if (!isPlayerTurn || !jeuActif) {
@@ -119,30 +118,19 @@ function gestionClicgrid() {
     const indexgrid = parseInt(this.dataset.index);
     var convertionSymbole = playerSymbole[joueurActif];
 
-    document.querySelector(".croix1").disabled = true;
-    document.querySelector(".rond1").disabled = true;
-
     // Vérifier si la case est déjà remplie
     if (etatJeu[indexgrid] !== "") {
+        this.classList.add("disabled"); // Add the "disabled" class to the clicked cell
         return;
     }
 
-    const imgElement = document.createElement("img");
-
-    if (joueurActif === "X") {
-        imgElement.src = "../images/croix1.png";
-    } else {
-        imgElement.src = "../images/rond1.png";
-    }
-
-    imgElement.alt = joueurActif;
-
     this.innerHTML = "";
-    this.appendChild(imgElement);
-
     etatJeu[indexgrid] = joueurActif;
-    console.log(`${indexgrid}.${convertionSymbole}`);
 
+    // Add the "disabled" class to the clicked cell
+    this.classList.add("disabled");
+
+    console.log(`${indexgrid}.${convertionSymbole}`);
     verifGagne();
 
     // Change the active player after the current player has made a move
@@ -157,11 +145,8 @@ function gestionClicgrid() {
             if (aiMoveIndex !== -1) {
                 etatJeu[aiMoveIndex] = "O";
                 const aiCell = document.querySelector(`td[data-index="${aiMoveIndex}"]`);
-                const aiImgElement = document.createElement("img");
-                aiImgElement.src = "../images/rond1.png";
-                aiImgElement.alt = "O";
                 aiCell.innerHTML = "";
-                aiCell.appendChild(aiImgElement);
+                aiCell.classList.add("disabled"); // Add the "disabled" class to the AI's cell
                 var convertionSymbole = playerSymbole["O"];
                 console.log(`${aiMoveIndex}.${convertionSymbole}`);
                 verifGagne();
@@ -235,25 +220,4 @@ function verifGagne() {
 // réinitialise le jeu
 function recommencer(){
     window.location.reload();
-}
-
-// ajout d'un gestionnaire d'événements au bouton de choix de symbole
-document.querySelector(".croix1").addEventListener("click", function() {
-    choisirSymbole("X");
-});
-
-document.querySelector(".rond1").addEventListener("click", function() {
-    choisirSymbole("O");
-});
-
-// fonction pour gérer le choix du symbole
-function choisirSymbole(nouveauSymbole) {
-    if (nouveauSymbole.toUpperCase() === "X" || nouveauSymbole.toUpperCase() === "O") {
-        joueurActif = nouveauSymbole.toUpperCase();
-        statut.innerHTML = tourJoueur();
-    } 
-    if (nouveauSymbole.toUpperCase() === "O" || nouveauSymbole.toUpperCase() === "X") {
-        joueurActif = nouveauSymbole.toUpperCase();
-        statut.innerHTML = tourJoueur();
-    } 
 }

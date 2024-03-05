@@ -67,21 +67,12 @@ function updateGameState(indexgrid, convertionSymbole) {
     const cell = document.querySelector(`td[data-index="${indexgrid}"]`);
 
     if (cell) {
-        const imgElement = document.createElement("img");
-        imgElement.src = convertionSymbole === playerSymbole["X"] ? "../images/croix1.png" : "../images/rond1.png";
-        imgElement.alt = joueurActif;
+        // Set a data attribute to track the symbol in the cell
+        cell.dataset.symbol = joueurActif;
 
-        // Check if the cell has child nodes and remove them
-        while (cell.firstChild) {
-            cell.removeChild(cell.firstChild);
-        }
-
-        // Replace innerHTML with the img element
-        cell.appendChild(imgElement);
+        // Update any other game-related logic as needed
+        verifGagne();
     }
-
-    // Update any other game-related logic as needed
-    verifGagne();
 }
 
 function gestionClicgrid() {
@@ -95,16 +86,8 @@ function gestionClicgrid() {
         return;
     }
 
-    // Create an img element with the image source
-    const imgElement = document.createElement("img");
-
-    // Determine which player is active and set the appropriate image source
-    imgElement.src = convertionSymbole === playerSymbole["X"] ? "../images/croix1.png" : "../images/rond1.png";
-    imgElement.alt = joueurActif;
-
-    // Replace innerHTML with the img element
-    this.innerHTML = "";
-    this.appendChild(imgElement);
+    // Set a data attribute to track the symbol in the cell
+    this.dataset.symbol = joueurActif;
 
     // Add the "disabled" class to the clicked cell
     this.classList.add("disabled");
