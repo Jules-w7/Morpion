@@ -37,7 +37,7 @@ const mqttTopic = 'gameplay_moves';
 
 // Define which document will be opened first
 app.get('/', (req, res) => {
-  res.redirect('/public/index.html');
+  res.redirect(path.join(__dirname, 'public', 'html', 'home.html'));
 });
 
 // Handle the "/playervsplayer" page with the sessionHandler
@@ -129,6 +129,46 @@ io.on('connection', (socket) => {
             }
         }
     });
+
+    socket.on('aiMoveIndex', ({ aiMoveIndex, convertionSymbole}) => {
+        console.log(`${aiMoveIndex}.${convertionSymbole}`);
+
+        const mqttMessage = `${aiMoveIndex}.${convertionSymbole}`;
+        mqttClient.publish(mqttTopic, mqttMessage, (err) => {
+            if (err) {
+                console.error('Failed to send MQTT message:', err);
+            } else {
+                console.log('MQTT message sent successfully:', mqttMessage);
+            }
+        });
+    })
+
+    socket.on('playerMoveIndex', ({ indexgrid, convertionSymbole}) => {
+        console.log(`${indexgrid}.${convertionSymbole}`);
+
+        const mqttMessage = `${indexgrid}.${convertionSymbole}`;
+        mqttClient.publish(mqttTopic, mqttMessage, (err) => {
+            if (err) {
+                console.error('Failed to send MQTT message:', err);
+            } else {
+                console.log('MQTT message sent successfully:', mqttMessage);
+            }
+        });
+    })
+
+    socket.on('restartMatrix', () => {
+        let message = "0.4";
+        console.log(message);
+        
+        const mqttMessage = message;
+        mqttClient.publish(mqttTopic, mqttMessage, (err) => {
+            if (err) {
+                console.error('Failed to send MQTT message:', err);
+            } else {
+                console.log('MQTT message sent successfully:', mqttMessage);
+            }
+        });
+    })
 });
 
 // Start the server

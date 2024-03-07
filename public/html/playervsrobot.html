@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/game.css">
     <title>Game</title>
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
 </head>
 <body>
     <h2 id="statut"></h2>
@@ -39,6 +40,9 @@
         </div>
         <a href="../html/home.html"><img class="fleche" src="../images/fleche.png"></a>
         <script src="/Botgameplay.js"></script>
+        <script>
+            const socket = io('http://localhost:3000');
+        </script>
     </div>
 </body>
 

@@ -144,6 +144,7 @@ function verifGagne() {
 
         // Emit a message to the server indicating the win
         socket.emit('playerWin', { playerName: joueurActif, jeuActif: false });
+        resetMatrix()
         return;
     }
 
@@ -158,6 +159,7 @@ function verifGagne() {
 
         // Emit a message to the server indicating a tie
         socket.emit('gameTie', { jeuActif: false });
+        resetMatrix()
         return;
     }
 
@@ -176,13 +178,17 @@ socket.on('playerWin', ({ playerName, jeuActif }) => {
 });
 
 socket.on('gameTie', ({ jeuActif }) => {
-    console.log(`The game is a tie!`);
+    console.log(`Egalité`);
     jeuActif = false; // Assuming you're using this variable to control the game state
     document.querySelectorAll("td[data-index]").forEach(cell => cell.removeEventListener("click", gestionClicgrid));
     statut.innerHTML = egalite();
 });
 
-// Reset the game
+function resetMatrix() { // This function is to restart all the matrix when the game is over
+    socket.emit('restartMatrix');
+}
+
+// Reset the game 
 function recommencer() {
     window.location.reload();
 }

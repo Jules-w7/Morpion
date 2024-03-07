@@ -130,7 +130,7 @@ function gestionClicgrid() {
     // Add the "disabled" class to the clicked cell
     this.classList.add("disabled");
 
-    console.log(`${indexgrid}.${convertionSymbole}`);
+    socket.emit('playerMoveIndex', { indexgrid, convertionSymbole });
     verifGagne();
 
     // Change the active player after the current player has made a move
@@ -148,7 +148,7 @@ function gestionClicgrid() {
                 aiCell.innerHTML = "";
                 aiCell.classList.add("disabled"); // Add the "disabled" class to the AI's cell
                 var convertionSymbole = playerSymbole["O"];
-                console.log(`${aiMoveIndex}.${convertionSymbole}`);
+                socket.emit('aiMoveIndex', { aiMoveIndex, convertionSymbole });
                 verifGagne();
             }
             // Change the active player after the AI has made a move
@@ -196,7 +196,6 @@ function verifGagne() {
         // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
         // Emit a message to the server indicating the win
-        socket.emit('playerWin', { jeuActif: false });
         return;
     }
 
@@ -207,8 +206,6 @@ function verifGagne() {
         console.log(playerSymbole[joueurActif], 'egalité');
         // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
-        // Emit a message to the server indicating a tie
-        socket.emit('gameTie', { jeuActif: false });
         return;
     }
 
