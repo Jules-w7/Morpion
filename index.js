@@ -169,6 +169,21 @@ io.on('connection', (socket) => {
             }
         });
     })
+
+    socket.on('restartBotGame', () => {
+        console.log(`game is over`)
+        let restartmessage = "0.4";
+        console.log(restartmessage);
+
+        const mqttMessage = restartmessage;
+        mqttClient.publish(mqttTopic, mqttMessage, (err) => {
+            if (err) {
+                console.error('Failed to send MQTT message:', err);
+            } else {
+                console.log('MQTT message sent successfully:', mqttMessage);
+            }
+        });
+    })
 });
 
 // Start the server

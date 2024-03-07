@@ -196,6 +196,7 @@ function verifGagne() {
         // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
         // Emit a message to the server indicating the win
+        socket.emit('restartBotGame');
         return;
     }
 
@@ -206,6 +207,7 @@ function verifGagne() {
         console.log(playerSymbole[joueurActif], 'egalité');
         // Add an event handler to the button
         document.querySelector(".restart").addEventListener("click", recommencer);
+        socket.emit('restartBotGame');
         return;
     }
 
